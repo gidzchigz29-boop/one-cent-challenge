@@ -27,23 +27,105 @@
 </main>
 <footer><div class="brand"><span class="globe">🌍</span><span>THE <b>ONE CENT</b> CHALLENGE</span></div><p>Small people. Big change.</p><small>Version 1 prototype • No donations are currently collected.</small></footer>
 <script>
-const KEY='oneCentChallengeV1';
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxuTNhJw4pmti7rkosH0yIdfLsLNhtwpDI6C-EqSKKLKR-BhSlQNV1Q5lCuSFwrY9PAOA/exec';
-let people=Number(localStorage.getItem(KEY)||0);
-const peopleEl=document.getElementById('peopleCount'); const valueEl=document.getElementById('valueCount'); const bar=document.getElementById('progressBar');
-function render(){peopleEl.textContent=people.toLocaleString(); valueEl.textContent='$'+(people*.01).toFixed(2)+' projected'; bar.style.width=Math.min(100,people/5000000000*100)+'%';}
+
+const KEY = 'oneCentChallengeV1';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxuTNhJw4pmti7rkosH0yIdfLsLNhtwpDI6C-EqSKKLKR-BhSlQNV1Q5lCuSFwrY9PAOA/exec';
+
+let people = Number(localStorage.getItem(KEY) || 0);
+
+const peopleEl = document.getElementById('peopleCount');
+const valueEl = document.getElementById('valueCount');
+const bar = document.getElementById('progressBar');
+
+function render() {
+  peopleEl.textContent = people.toLocaleString();
+  valueEl.textContent = '$' + (people * 0.01).toFixed(2) + ' projected';
+  bar.style.width = Math.min(100, people / 5000000000 * 100) + '%';
+}
+
 render();
-document.getElementById('joinForm').addEventListener('submit',e=>{e.preventDefault(); const name=document.getElementById('name').value.trim(); const country=document.getElementById('country').value.trim(); people++; localStorage.setItem(KEY,people); render(); const msg=document.getElementById('joinedMsg'); msg.hidden=false; msg.innerHTML=`🎉 <b>Welcome, ${name}!</b> You are challenger #${people.toLocaleString()} from ${country}. Now invite 5 people.`; document.getElementById('joinForm').reset();});
-const invite=`🌍 I just joined The One Cent Challenge!
+
+document.getElementById('joinForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const name = document.getElementById('name').value.trim();
+  const country = document.getElementById('country').value.trim();
+  const msg = document.getElementById('joinedMsg');
+  const button = e.currentTarget.querySelector('button[type="submit"]');
+
+  if (!name || !country) {
+    msg.hidden = false;
+    msg.textContent = 'Please enter your name and country.';
+    return;
+  }
+
+  button.disabled = true;
+  msg.hidden = false;
+  msg.textContent = 'Submitting your registration...';
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+      },
+      body: new URLSearchParams({
+        name: name,
+        country: country
+      }).toString()
+    });
+
+    people++;
+    localStorage.setItem(KEY, people);
+    render();
+
+    msg.textContent = 'Thank you, ' + name + '! Please invite 5 people.';
+    e.currentTarget.reset();
+  } catch (error) {
+    msg.textContent = 'We could not submit your registration. Please try again.';
+  } finally {
+    button.disabled = false;
+  }
+});
+
+const invite = `🌍 I just joined The One Cent Challenge!
 
 5 billion people. One cent each. One giant difference.
 
 I'm taking the challenge and inviting 5 people. Will you join me?
 
 #OneCentChallenge #OneGiantDifference`;
-document.getElementById('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(invite);document.getElementById('copyBtn').textContent='✅ INVITE TEXT COPIED';setTimeout(()=>document.getElementById('copyBtn').textContent='🔗 COPY INVITE TEXT',1800)}catch(e){alert(invite)}};
-document.getElementById('shareBtn').onclick=async()=>{if(navigator.share){await navigator.share({title:'The One Cent Challenge',text:invite,url:location.href})}else{try{await navigator.clipboard.writeText(invite+'
-'+location.href);alert('Invite copied!')}catch(e){alert(invite)}}};
+
+document.getElementById('copyBtn').onclick = async function() {
+  try {
+    await navigator.clipboard.writeText(invite);
+    this.textContent = '✅ INVITE TEXT COPIED';
+  } catch (error) {
+    alert(invite);
+  }
+};
+
+document.getElementById('shareBtn').onclick = async function() {
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: 'The One Cent Challenge',
+        text: invite,
+        url: location.href
+      });
+    } catch (error) {
+      if (error.name !== 'AbortError') alert(invite);
+    }
+  } else {
+    try {
+      await navigator.clipboard.writeText(invite + '\n' + location.href);
+      alert('Invite copied!');
+    } catch (error) {
+      alert(invite + '\n' + location.href);
+    }
+  }
+};
 
 </script>
 <!-- GitHub Pages rebuild -->
