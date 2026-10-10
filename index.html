@@ -83,7 +83,7 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
     msg.textContent = 'Thank you, ' + name + '! Please invite 5 people.';
     e.currentTarget.reset();
   } catch (error) {
-    msg.textContent = 'We could not submit your registration. Please try again.';
+    msg.textContent = 'Your request may have been received. Please check your registration before trying again.';
   } finally {
     button.disabled = false;
   }
