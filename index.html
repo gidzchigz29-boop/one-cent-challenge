@@ -28,7 +28,7 @@
 <footer><div class="brand"><span class="globe">🌍</span><span>THE <b>ONE CENT</b> CHALLENGE</span></div><p>Small people. Big change.</p><small>Version 1 prototype • No donations are currently collected.</small></footer>
 <script>
 const KEY='oneCentChallengeV1';
-  const SCRIPT_URL = ''https://script.google.com/macros/s/AKfycbxuTNhJw4pmti7rkosH0yIdfLsLNhtwpDI6C-EqSKKLKR-BhSlQNV1Q5lCuSFwrY9PAOA/exec'';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxuTNhJw4pmti7rkosH0yIdfLsLNhtwpDI6C-EqSKKLKR-BhSlQNV1Q5lCuSFwrY9PAOA/exec';
 let people=Number(localStorage.getItem(KEY)||0);
 const peopleEl=document.getElementById('peopleCount'); const valueEl=document.getElementById('valueCount'); const bar=document.getElementById('progressBar');
 function render(){peopleEl.textContent=people.toLocaleString(); valueEl.textContent='$'+(people*.01).toFixed(2)+' projected'; bar.style.width=Math.min(100,people/5000000000*100)+'%';}
