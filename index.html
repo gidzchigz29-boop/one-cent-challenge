@@ -44,6 +44,20 @@ function render() {
 }
 
 render();
+  
+async function updateParticipantCount() {
+  try {
+    const response = await fetch(SCRIPT_URL);
+    const data = await response.json();
+    people = Number(data.total) || 0;
+    render();
+  } catch (error) {
+    console.log('Could not update participant count.');
+  }
+}
+
+updateParticipantCount();
+
 
 document.getElementById('joinForm').addEventListener('submit', async function(e) {
   e.preventDefault();
