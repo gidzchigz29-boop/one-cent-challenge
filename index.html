@@ -57,6 +57,7 @@ async function updateParticipantCount() {
 }
 
 updateParticipantCount();
+  setInterval(updateParticipantCount,10000);
 
 
 document.getElementById('joinForm').addEventListener('submit', async function(e) {
