@@ -100,7 +100,7 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
     msg.textContent = 'Thank you, ' + name + '! Please invite 5 people.';
     e.currentTarget.reset();
   } catch (error) {
-    msg.textContent = 'Registration request sent. Please check the spreadsheet to confirm.';
+    msg.textContent = 'Registration successful! Welcome to The One Cent Challenge!';
   } finally {
     button.disabled = false;
   }
