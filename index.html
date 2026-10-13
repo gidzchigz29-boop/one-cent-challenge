@@ -20,7 +20,9 @@
 <div class="hero-art"><div class="coin">1¢</div><div class="sun"></div><div class="earth">🌍</div><div class="people">👩🏾‍🤝‍👨🏽 👨🏿‍🤝‍👩🏽 👨🏽‍🤝‍👨🏾</div></div>
 </section>
 <section id="about" class="section intro"><div><div class="eyebrow">THE IDEA</div><h2>Small contribution.<br><span>Global imagination.</span></h2></div><p>The One Cent Challenge is a global movement built around a simple question: <b>what happens when billions of ordinary people do one small thing together?</b> Our first goal is participation—not donations. We want to prove that the idea can travel across countries, languages and communities.</p></section>
-<section id="join" class="section join"><div class="join-card"><div class="eyebrow">STEP 1</div><h2>Take the challenge.</h2><p>Join the movement for free. Then invite five people to join you.</p><form id="joinForm"><label>First name<input id="name" required maxlength="40" placeholder="e.g. Gift"></label><label>Surname<input id="surname" required maxlength="40" placeholder="e.g. Chigamba"></lable><lable>Country <input id="country" required maxlength="60" placeholder="e.g. Zimbabwe"></lable><button class="cta" type="submit">JOIN THE CHALLENGE →</button></form><div id="joinedMsg" class="message" hidden></div></div><div class="share-card"><div class="eyebrow">STEP 2</div><h3>Invite 5 people.</h3><p>Your share is the engine of the challenge.</p><button class="share" id="shareBtn">📤 SHARE THE CHALLENGE</button><button class="copy" id="copyBtn">🔗 COPY INVITE TEXT</button></div></section>
+<section id="join" class="section join"><div class="join-card"><div class="eyebrow">STEP 1</div><h2>Take the challenge.</h2><p>Join the movement for free. Then invite five people to join you.</p><form id="joinForm"><label>First name<input id="name" required maxlength="40" placeholder="e.g. Gift"></label><label>Surname<input id="surname" required maxlength="40" placeholder="e.g. Chigamba"></lable><label>Email
+<input id="email" type="email" required maxlength="100" placeholder="e.g. you@example.com">
+</label><lable>Country <input id="country" required maxlength="60" placeholder="e.g. Zimbabwe"></lable><button class="cta" type="submit">JOIN THE CHALLENGE →</button></form><div id="joinedMsg" class="message" hidden></div></div><div class="share-card"><div class="eyebrow">STEP 2</div><h3>Invite 5 people.</h3><p>Your share is the engine of the challenge.</p><button class="share" id="shareBtn">📤 SHARE THE CHALLENGE</button><button class="copy" id="copyBtn">🔗 COPY INVITE TEXT</button></div></section>
 <section id="causes" class="section"><div class="center"><div class="eyebrow">OUR FUTURE CAUSES</div><h2>Choose the change<br><span>you want to support.</span></h2><p>These are the areas the project may support through properly structured partnerships in the future.</p></div><div class="causes"><article>💧<h3>Clean Water</h3><p>Safe water for communities.</p></article><article>📚<h3>Education</h3><p>Brighter futures for children.</p></article><article>🍚<h3>Food</h3><p>Helping fight hunger.</p></article><article>🏥<h3>Healthcare</h3><p>Stronger, healthier lives.</p></article><article>🌱<h3>Environment</h3><p>A cleaner, greener planet.</p></article><article>❤️<h3>Families</h3><p>Hope and practical support.</p></article><article>🐘<h3>Wildlife</h3><p>Protecting animals and nature.</p></article></div></section>
 <section id="how" class="section dark"><div class="center"><div class="eyebrow">HOW IT WORKS</div><h2>Three tiny actions.<br><span>A global movement.</span></h2></div><div class="steps"><div><b>01</b><h3>JOIN</h3><p>Accept the challenge for free.</p></div><div><b>02</b><h3>INVITE</h3><p>Share it with five people.</p></div><div><b>03</b><h3>IMPACT</h3><p>Watch the global community grow.</p></div></div><div class="notice">🔒 <b>Important:</b> Version 1 does not collect donations. Any future fundraising will only begin after the appropriate legal, payment and accountability structure is established.</div></section>
 <section id="impact" class="section impact"><div class="center"><div class="eyebrow">THE DREAM</div><h2>Imagine the numbers.</h2></div><div class="impactgrid"><div><strong>1,000</strong><span>people = $10</span></div><div><strong>100,000</strong><span>people = $1,000</span></div><div><strong>1,000,000</strong><span>people = $10,000</span></div><div><strong>5,000,000,000</strong><span>people = $50,000,000</span></div></div></section>
@@ -96,13 +98,14 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
 
   const name = document.getElementById('name').value.trim();
   const surname = document.getElementById('surname').value.trim();
+  const email = document.getElementById('email').value.trim().toLowerCase();
   const country = document.getElementById('country').value.trim();
   const msg = document.getElementById('joinedMsg');
   const button = e.currentTarget.querySelector('button[type="submit"]');
 
-  if (!name || !surname || !country) {
+  if (!name || !surname || !email || !country) { 
     msg.hidden = false;
-    msg.textContent = 'Please enter your name, surname and country.';
+    msg.textContent = 'Please enter your name, surname, email and country.';
     return;
   }
 
@@ -120,6 +123,7 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
       body: new URLSearchParams({
         name: name,
         surname: surname,
+        email: email,
         country: country
       }).toString()
     });
