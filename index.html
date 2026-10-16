@@ -103,7 +103,7 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
   const msg = document.getElementById('joinedMsg');
   const button = e.currentTarget.querySelector('button[type="submit"]');
 
-  if (!name || !surname || !email || !country) { 
+  if (!name || !surname || !email || !country) {
     msg.hidden = false;
     msg.textContent = 'Please enter your name, surname, email and country.';
     return;
@@ -111,12 +111,59 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
 
   button.disabled = true;
   msg.hidden = false;
-  msg.textContent = 'Submitting your registration...';
+  msg.textContent = 'Checking your email...';
 
   try {
+    const bytes = await crypto.subtle.digest(
+      'SHA-256',
+      new TextEncoder().encode(email)
+    );
+
+    const emailHash = Array.from(new Uint8Array(bytes))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+
+    const duplicate = await new Promise((resolve, reject) => {
+      const callback = 'emailCheck_' + Date.now();
+      const script = document.createElement('script');
+
+      const timeout = setTimeout(() => {
+        delete window[callback];
+        script.remove();
+        reject(new Error('Email check timed out'));
+      }, 15000);
+
+      window[callback] = data => {
+        clearTimeout(timeout);
+        delete window[callback];
+        script.remove();
+        resolve(data);
+      };
+
+      script.onerror = () => {
+        clearTimeout(timeout);
+        delete window[callback];
+        script.remove();
+        reject(new Error('Email check failed'));
+      };
+
+      script.src = SCRIPT_URL +
+        '?emailHash=' + encodeURIComponent(emailHash) +
+        '&callback=' + callback;
+
+      document.head.appendChild(script);
+    });
+
+    if (duplicate.exists) {
+      msg.textContent = 'This email is already registered. Please use a different one.';
+      return;
+    }
+
+    msg.textContent = 'Submitting your registration...';
+
     await fetch(SCRIPT_URL, {
       method: 'POST',
-      mode: 'cors',
+      mode: 'no-cors',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
       },
@@ -128,14 +175,12 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
       }).toString()
     });
 
-    
-    
+    msg.textContent = 'Registration submitted. Please check the participant count before registering again.';
+    e.currentTarget.reset();
     render();
 
-    msg.textContent = 'Thank you, ' + name + '! Please invite 5 people.';
-    e.currentTarget.reset();
   } catch (error) {
-    msg.textContent = 'Registration could not be confirmed. Please try again.';
+    msg.textContent = 'We could not check your email or confirm registration. Please try again.';
   } finally {
     button.disabled = false;
   }
