@@ -180,7 +180,7 @@ document.getElementById('joinForm').addEventListener('submit', async function(e)
     render();
 
   } catch (error) {
-    msg.textContent = 'We could not check your email or confirm registration. Please try again.';
+   msg.textContent = 'Your registration request could not be confirmed. Please check the participant list before trying again.';
   } finally {
     button.disabled = false;
   }
